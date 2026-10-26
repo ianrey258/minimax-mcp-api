@@ -13,7 +13,7 @@ const envSchema = z
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
     MCP_TRANSPORT: z.enum(['stdio', 'http']).default('stdio'),
     PORT: z.coerce.number().int().positive().default(3000),
-    MCP_AUTH_TOKEN: z.string().min(1).optional(),
+    MCP_AUTH_TOKEN: z.string().optional(),
   })
   .refine((env) => env.MCP_TRANSPORT !== 'http' || !!env.MCP_AUTH_TOKEN, {
     message: 'MCP_AUTH_TOKEN is required when MCP_TRANSPORT=http',

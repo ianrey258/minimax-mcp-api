@@ -2,7 +2,8 @@
 
 A Model Context Protocol (MCP) server written in NestJS that wraps the
 [MiniMax platform APIs](https://platform.minimax.io/docs/api-reference/api-overview)
-and exposes them as MCP tools over **stdio**.
+and exposes them as MCP tools over **stdio** (local) or **streamable HTTP**
+(remote). The transport is picked at startup with `MCP_TRANSPORT`.
 
 ## Prerequisites
 
@@ -27,6 +28,16 @@ npm run build
 node dist/main.js
 ```
 
+## Run (HTTP)
+
+```bash
+MCP_TRANSPORT=http MCP_AUTH_TOKEN=change-me PORT=3000 node dist/main.js
+# or: npm run start:http   (with MCP_AUTH_TOKEN set in .env)
+```
+
+Serves streamable HTTP at `POST /mcp`. Every request must send
+`Authorization: Bearer <MCP_AUTH_TOKEN>`; anything else gets `401`.
+
 ## Environment variables
 
 | Variable | Required | Default | Description |
@@ -35,6 +46,9 @@ node dist/main.js
 | `MINIMAX_API_URL` | No | `https://api.minimax.io` | Base URL for the MiniMax API |
 | `LOG_LEVEL` | No | `log` | One of `debug \| log \| warn \| error` |
 | `NODE_ENV` | No | `development` | One of `development \| production \| test` |
+| `MCP_TRANSPORT` | No | `stdio` | `stdio` or `http` |
+| `PORT` | No | `3000` | HTTP listen port (`http` only) |
+| `MCP_AUTH_TOKEN` | When `http` | — | Bearer token clients must send (`http` only) |
 
 Copy `.env.example` to `.env` and fill in `MINIMAX_API_KEY` before running.
 
@@ -79,6 +93,16 @@ must be **absolute**):
   }
 }
 ```
+
+## Connect over HTTP (Claude Code)
+
+```bash
+claude mcp add --transport http minimax http://<host>:3000/mcp \
+  --header "Authorization: Bearer <MCP_AUTH_TOKEN>"
+```
+
+Note: `files_upload` reads `file_path` from the **server's** filesystem, so
+over HTTP it can only upload files that exist on the host running the server.
 
 ## Probe with MCP Inspector
 

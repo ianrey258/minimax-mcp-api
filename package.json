@@ -1,7 +1,7 @@
 {
   "name": "minimax-mcp-api",
   "version": "0.1.0",
-  "description": "MCP server exposing MiniMax platform APIs (speech, video, image, music, file) as MCP tools over stdio",
+  "description": "MCP server exposing MiniMax platform APIs (speech, video, image, music, file) as MCP tools over stdio or streamable HTTP",
   "private": true,
   "license": "UNLICENSED",
   "engines": {
@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "start": "node dist/main.js",
+    "start:http": "MCP_TRANSPORT=http node dist/main.js",
     "start:dev": "ts-node src/main.ts",
     "typecheck": "tsc --noEmit",
     "inspect": "npx @modelcontextprotocol/inspector node dist/main.js"
